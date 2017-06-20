@@ -337,7 +337,8 @@ phone.debug(function(details){
 });
 
 })();</script>
-<div id="chart"></div>
+<div id="chart" style="width: 500px;" ></div>
+    <div id="chart2" style="width: 500px;" ></div>
     <script>
       var pubnub = new PubNub({
         publishKey: 'pub-c-bd89102e-6480-4ced-9d5d-8f1879964dbe',
@@ -351,8 +352,41 @@ phone.debug(function(details){
         generate: {
           bindto: '#chart',
           data: {
-            type: 'spline',
-            labels: false
+            //type: 'spline',
+            labels: true
+          }
+        }
+      });
+    </script>
+
+    <script>
+      setInterval(function(){
+          var number_list = [20,20,1,1,10];
+        pubnub.publish({
+          channel: channel,
+          message: {
+            eon: {
+              
+              'ECG -P': number_list[Math.floor(Math.random() * 5)],
+              'ECG -Q': number_list[Math.floor(Math.random() * 5)]+20,
+              'ECG -R': number_list[Math.floor(Math.random() * 5)]+40,
+              'ECG -S': number_list[Math.floor(Math.random() * 5)]+60
+            }
+          }
+        });
+      }, 100);
+    </script>
+    <script>
+     
+    //  var channel = 'c3-gauge'  + Math.random();
+      
+      eon.chart({
+        pubnub: pubnub,
+        channels: ["c3-gauge"],
+        generate: {
+          bindto: '#chart2',
+          data: {
+            type: 'gauge'
           }
         }
       });
@@ -360,17 +394,14 @@ phone.debug(function(details){
     <script>
       setInterval(function(){
         pubnub.publish({
-          channel: channel,
+          channel: 'c3-gauge',
           message: {
             eon: {
-              'Austin': Math.floor(Math.random() * 99),
-              'New York': Math.floor(Math.random() * 99),
-              'San Francisco': Math.floor(Math.random() * 99),
-              'Portland': Math.floor(Math.random() * 99)
+              'Austin': Math.floor(Math.random() * 99)
             }
           }
         });
-      }, 1000);
+      }, 2000);
     </script>
 </body>
 </html>
