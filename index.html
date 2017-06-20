@@ -337,8 +337,25 @@ phone.debug(function(details){
 });
 
 })();</script>
-<div id="chart" style="width: 500px;" ></div>
-    <div id="chart2" style="width: 500px;" ></div>
+<style>
+#container div { 
+        height: 300px; 
+        width: 400px; 
+        border: 1px solid red; 
+        margin-left: 5px; 
+        float: left; /*Here you can also use display: inline-block instead of float:left*/
+         
+}
+
+</style>
+<div id="container">
+    
+    <div id="chart" class="two"  ></div>
+
+    <div id="chart3" class="three" ></div>
+    <div id="chart4" class="four" ></div>
+    <div id="chart2" class="one"  ></div>
+ </div>  
     <script>
       var pubnub = new PubNub({
         publishKey: 'pub-c-bd89102e-6480-4ced-9d5d-8f1879964dbe',
@@ -346,7 +363,7 @@ phone.debug(function(details){
       });
       var channel = "c3-spline" + Math.random();
       eon.chart({
-        channels: [channel],
+        channels: ['ecg'],
         flow: true,
         pubnub: pubnub,
         generate: {
@@ -357,13 +374,45 @@ phone.debug(function(details){
           }
         }
       });
+       eon.chart({
+        pubnub: pubnub,
+        channels: ['bar'],
+        generate: {
+          bindto: '#chart3',
+          data: {
+            labels: true,
+            type: 'bar'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
+      eon.chart({
+        pubnub: pubnub,
+        channels: ['bar2'],
+        generate: {
+          bindto: '#chart4',
+          data: {
+            labels: true,
+            type: 'area-spline'
+          },
+          bar: {
+            width: {
+              ratio: 0.5
+            }
+          }
+        }
+      });
     </script>
 
     <script>
       setInterval(function(){
           var number_list = [20,20,1,1,10];
         pubnub.publish({
-          channel: channel,
+          channel: 'ecg',
           message: {
             eon: {
               
@@ -401,7 +450,27 @@ phone.debug(function(details){
             }
           }
         });
+        pubnub.publish({
+          channel: 'bar',
+          message: {
+            eon: {
+              
+              'Temperature': Math.floor(Math.random() * 99)
+              
+            }
+          }
+        });
+        pubnub.publish({
+          channel: 'bar2',
+          message: {
+            eon: {
+              'oxygen Saturation': Math.floor(Math.random() * 99)
+              
+            }
+          }
+        });
       }, 2000);
+      
     </script>
 </body>
 </html>
